@@ -1,10 +1,26 @@
 import { useMemo } from 'react'
 import type { DashboardWidgetConfig, DashboardRow, AggregationType } from '../../core/types'
 import { aggregateValues } from '../../registry/visualRegistry'
+// DOMPurify is used to sanitize HTML content and prevent XSS attacks
+import DOMPurify from 'dompurify'
 
 type RichTextWidgetProps = {
   widget: DashboardWidgetConfig
   rows: DashboardRow[]
+}
+
+/**
+ * Sanitizes HTML content to prevent XSS attacks.
+ * Only allows safe tags (span, p) and attributes (class) to be rendered.
+ * This protects against malicious scripts being injected into the rich text content.
+ */
+function sanitizeHtml(html: string | null | undefined) {
+  return html
+    ? DOMPurify.sanitize(html, {
+        ALLOWED_TAGS: ['span', 'p'],
+        ALLOWED_ATTR: ['class'],
+      })
+    : '';
 }
 
 export function RichTextWidget({ widget, rows }: RichTextWidgetProps) {
@@ -61,7 +77,8 @@ export function RichTextWidget({ widget, rows }: RichTextWidgetProps) {
         color: widget.style.axisLabelColor,
         fontSize: widget.style.fontSizeSubtitle,
       }}
-      dangerouslySetInnerHTML={{ __html: processedHtml }}
+      // Sanitize HTML before rendering to prevent XSS vulnerabilities
+      dangerouslySetInnerHTML={{ __html: sanitizeHtml(processedHtml) }}
     />
   )
 }
