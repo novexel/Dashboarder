@@ -1,0 +1,125 @@
+.react-grid-item {
+  transition: transform 200ms ease;
+}
+
+.react-grid-item > .react-resizable-handle {
+  position: absolute;
+  z-index: 30;
+}
+
+/* Edges */
+.react-grid-item > .react-resizable-handle-n {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 12px;
+  cursor: ns-resize;
+}
+
+.react-grid-item > .react-resizable-handle-s {
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 12px;
+  cursor: ns-resize;
+}
+
+.react-grid-item > .react-resizable-handle-e {
+  top: 0;
+  right: 0;
+  width: 12px;
+  height: 100%;
+  cursor: ew-resize;
+}
+
+.react-grid-item > .react-resizable-handle-w {
+  top: 0;
+  left: 0;
+  width: 12px;
+  height: 100%;
+  cursor: ew-resize;
+}
+
+/* Corners */
+.react-grid-item > .react-resizable-handle-se {
+  bottom: 0;
+  right: 0;
+  width: 18px;
+  height: 18px;
+  cursor: nwse-resize;
+}
+
+.react-grid-item > .react-resizable-handle-sw {
+  bottom: 0;
+  left: 0;
+  width: 18px;
+  height: 18px;
+  cursor: nesw-resize;
+}
+
+.react-grid-item > .react-resizable-handle-ne {
+  top: 0;
+  right: 0;
+  width: 18px;
+  height: 18px;
+  cursor: nesw-resize;
+}
+
+.react-grid-item > .react-resizable-handle-nw {
+  top: 0;
+  left: 0;
+  width: 18px;
+  height: 18px;
+  cursor: nwse-resize;
+}
+
+.react-grid-item.react-grid-placeholder {
+  border-radius: 28px;
+  background: rgba(15, 118, 110, 0.12);
+  border: 1px dashed rgba(15, 118, 110, 0.4);
+}
+
+.dashboard-scrollbar::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.dashboard-scrollbar::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.65);
+}
+
+/* Hide default corner and edge pointers/arrows from react-resizable */
+.react-grid-item > .react-resizable-handle,
+.react-grid-item > .react-resizable-handle::before,
+.react-grid-item > .react-resizable-handle::after {
+  display: block; /* keep handle block layout so it occupies drag space */
+  content: none !important;
+  background: none !important;
+  background-image: none !important;
+}
+
+.react-grid-item > .react-resizable-handle::before,
+.react-grid-item > .react-resizable-handle::after {
+  display: none !important;
+}
+
+/* Style the widget frame border to be dashed and dark during resize and drag */
+.react-grid-item.resizing > section,
+.react-grid-item.react-draggable-dragging > section {
+  border-style: dashed !important;
+  border-color: #0f172a !important; /* dark slate border in light mode */
+  box-shadow: none !important;
+  border-width: 2px !important;
+}
+
+.dark .react-grid-item.resizing > section,
+.dark .react-grid-item.react-draggable-dragging > section {
+  border-color: #f1f5f9 !important; /* light slate/white dashed border in dark mode */
+}
+
+/* Hide resize handles in preview mode to prevent resize cursors on edges */
+.grid-preview-mode .react-resizable-handle {
+  display: none !important;
+  pointer-events: none !important;
+}
