@@ -43,6 +43,31 @@ const getSingleMapping = (widget: DashboardWidgetConfig, key: string) => {
   return Array.isArray(value) ? value[0] : value
 }
 
+// Security: Allowlist of trusted domains for external widget click actions
+// ACTION REQUIRED: Add your allowed hosts before merging (e.g., ['example.com', 'trusted-domain.com'])
+const ALLOWED_HOSTS: string[] = []
+
+/**
+ * Validates that a URL is safe to open externally.
+ * Prevents XSS and open redirect attacks by checking:
+ * 1. URL uses http: or https: protocol (blocks javascript:, data:, vbscript:)
+ * 2. Hostname matches the allowlist (exact match or subdomain)
+ * 3. Strips tab/LF/CR characters that could bypass validation
+ */
+function isSafeExternalUrl(url: string, allowedHosts: string[]) {
+  if (!url) return false
+  try {
+    // Strip whitespace characters that URL parsers normalize
+    const parsed = new URL(String(url).replace(/[\t\n\r]/g, ''))
+    // Only allow http and https protocols
+    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return false
+    // Check hostname against allowlist (exact match or subdomain)
+    return allowedHosts.some((h) => parsed.hostname === h || parsed.hostname.endsWith('.' + h))
+  } catch (e) {
+    return false
+  }
+}
+
 const MissingState = ({ message }: { message: string }) => (
   <div className="flex h-full min-h-[180px] flex-col items-center justify-center rounded-[22px] border border-dashed border-slate-300 dark:border-slate-600/50 bg-slate-50/80 dark:bg-slate-800/80 px-6 text-center text-sm text-slate-500 dark:text-slate-400 dark:text-slate-500">
     <AlertTriangle className="mb-3 h-6 w-6 text-orange-500 dark:text-orange-400" />
@@ -207,7 +232,12 @@ export function WidgetRenderer({ widget, dataSource }: WidgetRendererProps) {
 
     // 1. Drilldown / URL Redirects
     if (widget.interactions?.clickAction?.type === 'link' && widget.interactions.clickAction.url) {
-       window.open(widget.interactions.clickAction.url, '_blank')
+       // Security: Validate URL before opening to prevent XSS and open redirect attacks
+       // Only opens the URL if it passes protocol and hostname validation
+       if (isSafeExternalUrl(widget.interactions.clickAction.url, ALLOWED_HOSTS)) {
+         window.open(widget.interactions.clickAction.url, '_blank')
+       }
+       // If validation fails, silently do nothing (user stays on current page)
        return
     }
 
