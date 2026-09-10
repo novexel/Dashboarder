@@ -4,7 +4,7 @@
   <img src="https://www.novexel.co.uk/lovable-uploads/fe6befc5-76e8-4465-95c0-e8ed93650005.png" alt="Novexel Logo" width="100" />
 </a>
 
-# @novexel/dashboarder
+# @novexel/dashboarder_module
 
 ### Enterprise-Grade Analytics Dashboard Builder & Visualization Studio
 
